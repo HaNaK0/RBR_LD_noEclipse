@@ -16,11 +16,11 @@ class Main (object):
         self.workspace = None #ws.Workspace(self.root, widgets.StatusBar(self.root, images), images, gridX = 32, gridY = 32, width = 1920 * 3, height = 1080)
         self.root = tk.Tk()
         self.images = ws.loadImages()
+        self.inDict = {"width" : 0, "height" : 0, "gridX" : 32, "gridY" : 32}
         self.root.config(menu = widgets.MenuBarC(self.root, self.images, self.newDialog, self.loadWorkSpace))
         self.root.geometry("600x600")
         self.root.title("RBR_LD")
         self.root.mainloop()
-        self.inDict = {"width" : 0, "height" : 0, "gridX" : 32, "gridY" : 32}
 
     
     def newDialog(self):
@@ -28,6 +28,7 @@ class Main (object):
         Opens up the New Project Dialog window
         '''
         dl.NewProject(self.root, self)
+        print(self.inDict)
     
     
     def newWorkSpace(self):

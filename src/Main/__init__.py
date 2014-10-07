@@ -4,8 +4,6 @@ Created on 12 aug 2014
 @author: HaNaK0
 '''
 from tkinter import *
-import widgets
-import workspace as ws
 import main
 
 main = main.Main()
