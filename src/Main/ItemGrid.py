@@ -75,13 +75,20 @@ class ItemGrid(object):
     
         
     def remove(self, posGridX, posGridY):
+        '''
+        removes a workspace item from itemGrid
+        '''
         if not self.grid[posGridX][posGridY] == None:
             self.grid[posGridX][posGridY].removeObj()
             self.grid[posGridX][posGridY] = None
         else:
-            print("empty")
-
+            print("empty")    
+        
+    
     def get(self, posGridX, posGridY):
+        '''
+        gets a workspace item based on position in grid
+        '''
         return self.grid[posGridX][posGridY]
     
     
@@ -95,6 +102,9 @@ class ItemGrid(object):
             self.currentSelected.selectToggle()
         else:
             self.currentSelected = None
+            
+    def getSelected(self):
+        return self.currentSelected
             
 
 
@@ -130,6 +140,13 @@ class WorkspaceItem(object):
             self.selected = True
         else:
             self.selected = False
+            
+    def getType(self):
+        '''
+        to get the item type
+        @return: the OTYPE constant int
+        '''
+        return self.OTYPE
 
 
 

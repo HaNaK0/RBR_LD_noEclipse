@@ -50,7 +50,10 @@ class Workspace(object):
         self.currentTool = con.TOOL["MOVE"]
         self.statusBar.setToolModeLbl(self.currentTool)
         self.currentItemType = 0
+        self.pathingMode = False
         self.file = file
+        
+        self.currentSelected = None
         
         #setting up the canvas
         self.root = canvasMaster
@@ -120,7 +123,7 @@ class Workspace(object):
         #creating ItemGrid
         self.itemGrid = ig.ItemGrid(self, self.sprites)
     
-    
+    #loads a workspace
     def load(self, file, event = None):
         '''
         loads a file and creates the set the variables for the grid
@@ -151,7 +154,7 @@ class Workspace(object):
             self.itemGrid.add(int(i.get("x")), int(i.get("y")), con.OTYPE[i.get("iType")])
             
             
-        
+    #destroys the workspace correctly    
     def destroy(self):
         self.canvas.destroy()       
     
@@ -176,6 +179,9 @@ class Workspace(object):
         elif self.currentTool == con.TOOL["ERASE"]:
             #destroys the object at event.x, event.y
             self.removeWorkSpItem(event.x, event.y)
+        elif self.currentTool == con.TOOl["SELECT"]:
+            self.selectItem(event)
+            
     
     
     
@@ -209,14 +215,15 @@ class Workspace(object):
         '''
         takes care of scrolling with the mouse wheel
         '''
-        if event.delta > 0:
-            self.currentItemType += 1
-            if self.currentItemType >=  9:
-                self.currentItemType = 0
-        else:
-            self.currentItemType -= 1
-            if self.currentItemType < 0:
-                self.currentItemType = 8
+        if  self.pathingMode == False:
+            if event.delta > 0:
+                self.currentItemType += 1
+                if self.currentItemType >=  9:
+                    self.currentItemType = 0
+            else:
+                self.currentItemType -= 1
+                if self.currentItemType < 0:
+                    self.currentItemType = 8
             
         self.statusBar.setScrollLbl(self.currentItemType)
     
@@ -261,8 +268,8 @@ class Workspace(object):
         '''
         creating level object in canvas
         '''
-        posGridX = int((X - self.offsetX) / self.gridX)
-        posGridY = int((Y - self.offsetY) / self.gridY)
+        posGridX, posGridY = self.convertXY(X, Y)
+        
         
         #Make sure new position is in grid
         if posGridX > ((self.width - self.width % self.gridX) / self.gridX) - 1:
@@ -280,8 +287,7 @@ class Workspace(object):
     
     #removing WorkspaceItems
     def removeWorkSpItem(self, X, Y):
-        posGridX = int((X - self.offsetX) / self.gridX)
-        posGridY = int((Y - self.offsetY) / self.gridY)
+        posGridX, posGridY = self.convertXY(X, Y)
         
         #if coordinates are in range of grid
         if posGridX <= ((self.width - self.width % self.gridX) / self.gridX) - 1 and posGridX >= 0 and posGridY <= ((self.height - self.height % self.gridY) / self.gridY)-1 and posGridY >= 0:
@@ -290,9 +296,27 @@ class Workspace(object):
         else:
             print("out of range")
             
+    #selecting workspaceItem
+    def selectItem(self, X, Y):
+        posGridX, posGridY = self.convertXY(X, Y)
+        
+        self.itemGrid.select(posGridX, posGridY)
+        
+        if self.itemGrid.getSelected() != None:
+            if self.itemGrid.getSelected().getType() == con.OTYPE["BLOB_FLY"]:
+                self.pathModeActivate(con.PMC["FLYING"])
+            elif self.itemGrid.getSelected().getType() == con.OTYPE["BLOB_WALK"]:
+                self.pathModeActivate(con.PMC["WALKING"])
+                
+        
+    #activate path mode
+    def pathModeActivate(self, mode):
+        self.pathingMode = mode    
+    
+    #save as      
     def saveAs(self, event = None):
         '''
-        opens a dialog in which you are able too choose where to save your file
+        opens a dialog in which you are able too choose where to save your file then calls the save file
         '''
         temp_file = self.file
         self.file = ""
@@ -305,7 +329,7 @@ class Workspace(object):
         
         self.save()
         
-        
+    #save
     def save(self, event = None):
         '''
         if already saved it saves in last location 
@@ -335,12 +359,21 @@ class Workspace(object):
         #fileO.close()
         
     
+    def convertXY(self, x, y):
+        '''
+        converts from exact position to posGrid
+        @return: posGridX, posGridY
+        '''
         
+        posGridX = int((x - self.offsetX) / self.gridX)
+        posGridY = int((y - self.offsetY) / self.gridY)
+        
+        return posGridX, posGridY   
         
             
 def loadImages():
     '''
-    @return: a Tuple of image objects: (simpleTile, player, spike, blob_fly, blob_walk, block_half_NE, block_half_NW, block_half_SE, block_half_SW)
+    @return: a Tuple of image objects: (simpleTile, player, spike, blob_fly, blob_walk, block_half_NE, block_half_NW, block_half_SE, block_half_SW, point_path)
     contains:
     [0]: simpleTile
     [1]: player
@@ -351,6 +384,7 @@ def loadImages():
     [6]: block_half_NW
     [7]: block_half_SE
     [8]: block_half_SW
+    [9]: path_poiny
     '''
     #Temporary block sprite
     try:
@@ -415,6 +449,13 @@ def loadImages():
         print(e)
         block_half_SW = None
     
-    sprT = (simpleTile, player, spike, blob_fly, blob_walk, block_half_NE, block_half_NW, block_half_SE, block_half_SW)
+    #path point    
+    try:
+        path_point = tk.PhotoImage(file = "..\Main\Sprites\\path_point")
+    except tk.TclError as e:
+        print(e)
+        block_half_SW = None
+    
+    sprT = (simpleTile, player, spike, blob_fly, blob_walk, block_half_NE, block_half_NW, block_half_SE, block_half_SW, path_point)
         
     return sprT
