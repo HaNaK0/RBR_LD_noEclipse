@@ -1,9 +1,10 @@
 '''
 Created on 30 sep 2014
 
-@author: Hampus
+@author: HaNaK0
 '''
 import tkinter as tk
+
 
 class NewProject(tk.Toplevel):
     '''
@@ -75,6 +76,27 @@ class NewProject(tk.Toplevel):
     def cancelButtonPressed(self):
         self.destroy()
         
+      
+      
+      
+  
         
+class OptionsDilaog(tk.Toplevel):
+    '''
+    An options dialog
+    a dialog where you change the program preferences
+    '''
+    
+    def __init__(self, master, controlDict):
+        '''
+        The constructor
+        '''
+        super(OptionsDilaog, self).__init__(master)
+        self.grid()
+        
+        #controls 
+        tk.Label(self, text = "Controls").grid(row = 0, column = 0, columnSpan = 3, sticky = tk.W)
+        
+        #Move
         
         

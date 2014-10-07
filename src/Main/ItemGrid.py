@@ -189,3 +189,38 @@ class HalfBlockSW(WorkspaceItem):
     A basic half block turned to the lower left corner
     '''
     OTYPE = con.OTYPE["HALF_B_SW"]
+    
+class PathPoint(WorkspaceItem):
+    '''
+    A path point that displays the path of a mob
+    '''
+    OTYPE = con.OTYPE["PATH_POINT"]
+    
+    def __init__(self, workspace, sprites, posGridX, posGridY):
+        super(PathPoint, self).__init__(workspace, sprites, posGridX, posGridY)
+        
+        self.parent = None
+        self.child = None
+    
+    def setParent(self, parent):
+        '''
+        sets  parent to chosen value 
+        '''
+        self.parent = parent
+        
+    def setLink(self, child):
+        '''
+        sets a child object and the parent field of the child
+        '''
+        self.child = child
+        child.setParent(self)
+        
+    def removeObj(self):
+        if self.child != None:
+            self.child.removeObj()
+        
+        WorkspaceItem.removeObj(self)
+        
+        
+        
+    
