@@ -6,10 +6,9 @@ Created on 13 aug 2014
 import tkinter as tk
 from tkinter import filedialog as fd
 import xml.etree.ElementTree as et
-
 import ItemGrid as ig
 import ActionStack as As
-
+import constants as con
 
 
 # constructor options constants
@@ -24,8 +23,6 @@ import ActionStack as As
 
 # levelObject types constants
 #BASIC = 0
-import constants as con
-
 
 class Workspace(object):
     """
@@ -55,10 +52,10 @@ class Workspace(object):
         self.currentTool = con.TOOL["MOVE"]
         self.statusBar.setToolModeLbl(self.currentTool)
         self.currentItemType = 0
-        self.pathingMode = False
+        self.pathingMode = None
         self.file = file
 
-        self.currentSelected = None
+        #self.currentSelected = None
 
         self.width = 0
         self.height = 0
@@ -320,6 +317,14 @@ class Workspace(object):
     def pathModeActivate(self, mode):
         self.pathingMode = mode
         self.currentTool = con.OTYPE["PATH_POINT"]
+
+    #deactivate path mode
+    def pathModeDeActivate(self):
+        """
+        sets pathingmode to None
+        :return:
+        """
+        self.pathingMode = None
 
     #save as      
     def saveAs(self, event=None):

@@ -28,6 +28,8 @@ class ItemGrid(object):
             for i in range(int(workspace.height / workspace.gridY)):
                 temp_list.append(None)
             self.grid.append(temp_list)
+        self.path = []
+        self.currentPath = None
 
     def add(self, posGridX, posGridY, objType=con.OTYPE["BASIC"]):
         print("does")
@@ -71,6 +73,10 @@ class ItemGrid(object):
             elif objType == con.OTYPE["HALF_B_SW"]:
                 self.grid[posGridX][posGridY] = HalfBlockSW(self.workspace, self.sprites, posGridX, posGridY)
 
+            #adds a pathing Node
+            elif objType == con.OTYPE["PATH_POINT"]:
+                self.grid[posGridX][posGridY] = PathPoint(self.workspace, self.sprites, posGridX, posGridY)
+
     def remove(self, posGridX, posGridY):
         """
         removes a workspace item from itemGrid
@@ -87,11 +93,13 @@ class ItemGrid(object):
         """
         return self.grid[posGridX][posGridY]
 
+    #select an object
     def select(self, posGridX, posGridY):
         if self.currentSelected is not None:
             self.currentSelected.selectToggle()
             
-        if self.grid[posGridX][posGridY] is None:
+        if self.grid[posGridX][posGridY] is not None:
+
             self.currentSelected = self.grid[posGridX][posGridY]
             
             self.currentSelected.selectToggle()
@@ -170,6 +178,11 @@ class EnemyBlobFlying(WorkspaceItem):
     """
     OTYPE = con.OTYPE["BLOB_FLY"]
 
+    def __init__(self, workspace, sprites, posGridX, posGridY,):
+        super().__init__(workspace, sprites, posGridX, posGridY)
+
+        self.path = None
+
 
 class EnemyBlobWalking(WorkspaceItem):
     """
@@ -215,25 +228,5 @@ class PathPoint(WorkspaceItem):
     
     def __init__(self, workspace, sprites, posGridX, posGridY):
         super(PathPoint, self).__init__(workspace, sprites, posGridX, posGridY)
-        
-        self.parent = None
-        self.child = None
-    
-    def setParent(self, parent):
-        """
-        sets  parent to chosen value 
-        """
-        self.parent = parent
-        
-    def setLink(self, child):
-        """
-        sets a child object and the parent field of the child
-        """
-        self.child = child
-        child.setParent(self)
-        
-    def removeObj(self):
-        if self.child is not None:
-            self.child.removeObj()
-        
-        WorkspaceItem.removeObj(self)
+
+        self.index = None
