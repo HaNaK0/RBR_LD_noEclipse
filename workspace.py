@@ -19,10 +19,10 @@ import constants as con
 # MOVE = 'Move'
 # SELECT = 'Select'
 # ERASE = 'Erase'
-#PLACE = 'Place'
+# PLACE = 'Place'
 
 # levelObject types constants
-#BASIC = 0
+# BASIC = 0
 
 class Workspace(object):
     """
@@ -294,8 +294,8 @@ class Workspace(object):
         posGridX, posGridY = self.convertXY(X, Y)
 
         #if coordinates are in range of grid
-        if ((self.width - self.width % self.gridX) / self.gridX) - 1 >= posGridX >= 0 and (
-                    (self.height - self.height % self.gridY) / self.gridY) - 1 >= posGridY >= 0:
+        if ((self.width - self.width % self.gridX) / self.gridX) - 1 >= posGridX >= 0 and \
+                                        ((self.height - self.height % self.gridY) / self.gridY) - 1 >= posGridY >= 0:
             if self.itemGrid.get(posGridX, posGridY) is not None:
                 self.actionStack.actionDestroy(posGridX, posGridY)
         else:
@@ -312,6 +312,8 @@ class Workspace(object):
                 self.pathModeActivate(con.PMC["FLYING"])
             elif self.itemGrid.getSelected().getType() == con.OTYPE["BLOB_WALK"]:
                 self.pathModeActivate(con.PMC["WALKING"])
+            else:
+                self.pathModeDeActivate()
 
     #activate path mode
     def pathModeActivate(self, mode):
@@ -325,6 +327,7 @@ class Workspace(object):
         :return:
         """
         self.pathingMode = None
+        self.currentTool = con.OTYPE["BLOB_WALK"]
 
     #save as      
     def saveAs(self, event=None):

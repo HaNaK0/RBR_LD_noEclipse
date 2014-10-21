@@ -139,13 +139,18 @@ class WorkspaceItem(object):
         self.workspace.canvas.delete(self.canvasItem)
 
     def selectToggle(self):
+        print("toggle")
         if not self.selected:
-            self.selectSquare = self.workspace.canvas.create_rectangle(self.posGridX * 32, self.posGridY * 32,
-                                                                       self.posGridX * 32 + 32,
-                                                                       self.posGridY * 32 + 32,
+            self.selectSquare = self.workspace.canvas.create_rectangle(self.posGridX * self.workspace.gridX,
+                                                                       self.posGridY * self.workspace.gridY,
+                                                                       self.posGridX * self.workspace.gridX +
+                                                                       self.workspace.gridX,
+                                                                       self.posGridY * self.workspace.gridY +
+                                                                       self.workspace.gridY,
                                                                        outline='blue')
             self.selected = True
         else:
+            self.workspace.canvas.delete(self.selectSquare)
             self.selected = False
 
     def getType(self):
@@ -192,6 +197,13 @@ class EnemyBlobFlying(WorkspaceItem):
 
     def setPath(self, path):
         self.path = path
+
+    def removeObj(self):
+        super(EnemyBlobFlying, self).removeObj()
+
+        if self.path is not None:
+            for i in self.path.nodes:
+                i.removeObj()
 
 
 class EnemyBlobWalking(EnemyBlobFlying):
