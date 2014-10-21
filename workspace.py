@@ -407,70 +407,70 @@ def loadImages():
     """
     #Temporary block sprite
     try:
-        simpleTile = tk.PhotoImage(file="..\Main\Sprites\\temp_block_32x32.ppm")
+        simpleTile = tk.PhotoImage(file=".\Sprites\\temp_block_32x32.ppm")
     except tk.TclError as e:
         print(e)
         simpleTile = None
 
     #Bob sprite
     try:
-        player = tk.PhotoImage(file="..\Main\Sprites\Bob_animation_ball_1.gif")
+        player = tk.PhotoImage(file=".\Sprites\Bob_animation_ball_1.gif")
     except tk.TclError as e:
         print(e)
         player = None
 
     #Spike enemy sprite    
     try:
-        spike = tk.PhotoImage(file="..\Main\Sprites\\temp_spike.ppm")
+        spike = tk.PhotoImage(file=".\Sprites\\temp_spike.ppm")
     except tk.TclError as e:
         print(e)
         spike = None
 
     #enemy Blob flying    
     try:
-        blob_fly = tk.PhotoImage(file="..\Main\Sprites\enemy_blob_flying.ppm")
+        blob_fly = tk.PhotoImage(file=".\Sprites\enemy_blob_flying.ppm")
     except tk.TclError as e:
         print(e)
         blob_fly = None
 
     #enemy blob walking
     try:
-        blob_walk = tk.PhotoImage(file="..\Main\Sprites\enemy_blob_walking.ppm")
+        blob_walk = tk.PhotoImage(file=".\Sprites\enemy_blob_walking.ppm")
     except tk.TclError as e:
         print(e)
         blob_walk = None
 
     #half block NE    
     try:
-        block_half_NE = tk.PhotoImage(file="..\Main\Sprites\\temp_block_half_NE.ppm")
+        block_half_NE = tk.PhotoImage(file=".\Sprites\\temp_block_half_NE.ppm")
     except tk.TclError as e:
         print(e)
         block_half_NE = None
 
     #half block NW    
     try:
-        block_half_NW = tk.PhotoImage(file="..\Main\Sprites\\temp_block_half_NW.ppm")
+        block_half_NW = tk.PhotoImage(file=".\Sprites\\temp_block_half_NW.ppm")
     except tk.TclError as e:
         print(e)
         block_half_NW = None
 
     #half block SE    
     try:
-        block_half_SE = tk.PhotoImage(file="..\Main\Sprites\\temp_block_half_SE.ppm")
+        block_half_SE = tk.PhotoImage(file=".\Sprites\\temp_block_half_SE.ppm")
     except tk.TclError as e:
         print(e)
         block_half_SE = None
 
     #half block SW    
     try:
-        block_half_SW = tk.PhotoImage(file="..\Main\Sprites\\temp_block_half_SW.ppm")
+        block_half_SW = tk.PhotoImage(file=".\Sprites\\temp_block_half_SW.ppm")
     except tk.TclError as e:
         print(e)
         block_half_SW = None
 
     #path point    
     try:
-        path_point = tk.PhotoImage(file="..\Main\Sprites\\path_point")
+        path_point = tk.PhotoImage(file=".\Sprites\\path_point.ppm")
     except tk.TclError as e:
         print(e)
         path_point = None

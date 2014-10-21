@@ -25,7 +25,7 @@ class ItemGrid(object):
         self.grid = []
         for i in range(int(workspace.width / workspace.gridX)):
             temp_list = []
-            for i in range(int(workspace.height / workspace.gridY)):
+            for j in range(int(workspace.height / workspace.gridY)):
                 temp_list.append(None)
             self.grid.append(temp_list)
         self.path = []
