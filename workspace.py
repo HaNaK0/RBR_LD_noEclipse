@@ -321,7 +321,7 @@ class Workspace(object):
     #deactivate path mode
     def pathModeDeActivate(self):
         """
-        sets pathingmode to None
+        sets path mode to None
         :return:
         """
         self.pathingMode = None
