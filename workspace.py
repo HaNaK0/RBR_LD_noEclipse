@@ -39,7 +39,7 @@ class Workspace(object):
         if New it calls create new and gives it int width, int height, int gridX, int gridY
         if Load it calls loadWork and gives it string file
         """
-        #loading images
+        # loading images
         self.sprites = images
 
         #setting status bar
@@ -117,7 +117,7 @@ class Workspace(object):
         creates a new workspace and places a grid in it
         and sets up variables
         """
-        #setting up correct values
+        # setting up correct values
         self.width = width
         self.height = height
 
@@ -134,7 +134,7 @@ class Workspace(object):
         #creating ItemGrid
         self.itemGrid = ig.ItemGrid(self, self.sprites)
 
-    #loads a workspace
+    # loads a workspace
     def load(self, file, event=None):
         """
         loads a file and creates the set the variables for the grid
@@ -168,6 +168,7 @@ class Workspace(object):
     #destroys the workspace correctly    
     def destroy(self):
         self.canvas.destroy()
+        self.statusBar.destroy()
 
         #event callback
 
@@ -237,7 +238,6 @@ class Workspace(object):
         """
         Set tool to Move
         """
-        print(event)
         self.currentTool = con.TOOL["MOVE"]
         self.statusBar.setToolModeLbl(self.currentTool)
 
@@ -246,7 +246,6 @@ class Workspace(object):
         """
         set tool to Select
         """
-        print(event)
         self.currentTool = con.TOOL["SELECT"]
         self.statusBar.setToolModeLbl(self.currentTool)
 
@@ -255,7 +254,6 @@ class Workspace(object):
         """
         set tool to place
         """
-        print(event)
         self.currentTool = con.TOOL["PLACE"]
         self.statusBar.setToolModeLbl(self.currentTool)
 
@@ -264,7 +262,6 @@ class Workspace(object):
         """
         set tool to erase
         """
-        print(event)
         self.currentTool = con.TOOL["ERASE"]
         self.statusBar.setToolModeLbl(self.currentTool)
 
@@ -318,7 +315,7 @@ class Workspace(object):
     #activate path mode
     def pathModeActivate(self, mode):
         self.pathingMode = mode
-        self.currentTool = con.OTYPE["PATH_POINT"]
+        self.currentItemType = con.OTYPE["PATH_POINT"]
 
     #deactivate path mode
     def pathModeDeActivate(self):
@@ -327,7 +324,7 @@ class Workspace(object):
         :return:
         """
         self.pathingMode = None
-        self.currentTool = con.OTYPE["BLOB_WALK"]
+        self.currentItemType = con.OTYPE["BLOB_WALK"]
 
     #save as      
     def saveAs(self, event=None):
@@ -408,7 +405,7 @@ def loadImages():
     [8]: block_half_SW
     [9]: path_point
     """
-    #Temporary block sprite
+    # Temporary block sprite
     try:
         simpleTile = tk.PhotoImage(file=".\Sprites\\temp_block_32x32.ppm")
     except tk.TclError as e:

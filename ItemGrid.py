@@ -33,7 +33,7 @@ class ItemGrid(object):
 
         # if empty
         if self.grid[posGridX][posGridY] is None:
-            #self.grid[posGridX][posGridY] = WorkspaceItem(self.workspace, self.sprites, posGridX, posGridY)
+            # self.grid[posGridX][posGridY] = WorkspaceItem(self.workspace, self.sprites, posGridX, posGridY)
             #adds a basic block
             if objType == con.OTYPE["BASIC"]:
                 self.grid[posGridX][posGridY] = WorkspaceItem(self.workspace, self.sprites, posGridX, posGridY)
@@ -92,10 +92,13 @@ class ItemGrid(object):
 
     # select an object
     def select(self, posGridX, posGridY):
+        tempItem = None
         if self.currentSelected is not None:  # if an item is selected
+            tempItem = self.currentSelected
             self.currentSelected.selectToggle()  # deselect it
 
-        if self.grid[posGridX][posGridY] is not None:  # if clicked space contains an item
+        if self.grid[posGridX][posGridY] is not None and self.grid[posGridX][posGridY] is not tempItem:
+        # if clicked space contains an item
 
             self.currentSelected = self.grid[posGridX][posGridY]
 
@@ -141,16 +144,12 @@ class WorkspaceItem(object):
     def selectToggle(self):
         print("toggle")
         if not self.selected:
-            self.selectSquare = self.workspace.canvas.create_rectangle(self.posGridX * self.workspace.gridX,
-                                                                       self.posGridY * self.workspace.gridY,
-                                                                       self.posGridX * self.workspace.gridX +
-                                                                       self.workspace.gridX,
-                                                                       self.posGridY * self.workspace.gridY +
-                                                                       self.workspace.gridY,
-                                                                       outline='blue')
             self.selected = True
+            self.selectSquare = SelectFrame(self.workspace, self.posGridX, self.posGridY)
+
         else:
-            self.workspace.canvas.delete(self.selectSquare)
+            if self.selectSquare is not None:
+                self.selectSquare.remove()
             self.selected = False
 
     def getType(self):
@@ -266,3 +265,27 @@ class PathPoint(WorkspaceItem):
     def removeObj(self):
         super(PathPoint, self).removeObj()
         self.workspace.canvas.delete(self.line)
+
+
+class SelectFrame(object):
+    """
+    handles the frame around the selected object.
+    """
+
+    def __init__(self, workspace, posGridX, posGridY):
+        self.workspace = workspace
+        self.posGridX = posGridX
+        self.posGridY = posGridY
+
+        self.selectSquare = self.workspace.canvas.create_rectangle(self.posGridX * self.workspace.gridX +
+                                                                   workspace.offsetX,
+                                                                   self.posGridY * self.workspace.gridY +
+                                                                   workspace.offsetY,
+                                                                   self.posGridX * self.workspace.gridX +
+                                                                   self.workspace.gridX + workspace.offsetX,
+                                                                   self.posGridY * self.workspace.gridY +
+                                                                   self.workspace.gridY + workspace.offsetY,
+                                                                   outline='yellow')
+
+    def remove(self):
+        self.workspace.canvas.delete(self.selectSquare)

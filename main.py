@@ -12,6 +12,8 @@ import widgets
 import workspace as ws
 import dialogs as dl
 
+import sys
+
 
 class Main (object):
     
@@ -24,6 +26,7 @@ class Main (object):
         self.root.geometry("600x600")
         self.root.title("RBR_LD")
         self.root.mainloop()
+        #self.file = sys.argv[0]
     
     def newDialog(self):
         """
