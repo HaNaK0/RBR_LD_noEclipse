@@ -34,7 +34,7 @@ class ItemGrid(object):
         # if empty
         if self.grid[posGridX][posGridY] is None:
             # self.grid[posGridX][posGridY] = WorkspaceItem(self.workspace, self.sprites, posGridX, posGridY)
-            #adds a basic block
+            # adds a basic block
             if objType == con.OTYPE["BASIC"]:
                 self.grid[posGridX][posGridY] = WorkspaceItem(self.workspace, self.sprites, posGridX, posGridY)
 
@@ -98,7 +98,7 @@ class ItemGrid(object):
             self.currentSelected.selectToggle()  # deselect it
 
         if self.grid[posGridX][posGridY] is not None and self.grid[posGridX][posGridY] is not tempItem:
-        # if clicked space contains an item
+            # if clicked space contains an item
 
             self.currentSelected = self.grid[posGridX][posGridY]
 
@@ -258,13 +258,54 @@ class PathPoint(WorkspaceItem):
 
         if self.index is not None and self.path.size() > 1:
             temp = self.path.getNode(self.index - 1)
-            self.line = self.workspace.canvas.create_line(temp.posGridX * 32 + 16, temp.posGridY * 32 + 16,
-                                                          self.posGridX * 32 + 16, self.posGridY * 32 + 16,
+            self.line = self.workspace.canvas.create_line(temp.posGridX
+                                                          * self.workspace.gridX
+                                                          + self.workspace.gridX / 2
+                                                          + self.workspace.offsetX,
+
+                                                          temp.posGridY
+                                                          * self.workspace.gridY
+                                                          + self.workspace.gridY / 2
+                                                          + self.workspace.offsetY,
+
+                                                          self.posGridX
+                                                          * self.workspace.gridX
+                                                          + self.workspace.gridX / 2
+                                                          + self.workspace.offsetX,
+
+                                                          self.posGridY
+                                                          * self.workspace.gridY
+                                                          + self.workspace.gridY / 2
+                                                          + self.workspace.offsetY,
+
+                                                          fill='yellow')
+        elif self.index is not None and self.path.size() == 1:
+            self.line = self.workspace.canvas.create_line(self.path.getOwner().posGridX
+                                                          * self.workspace.gridX
+                                                          + self.workspace.gridX / 2
+                                                          + self.workspace.offsetX,
+
+                                                          self.path.getOwner().posGridY
+                                                          * self.workspace.gridY
+                                                          + self.workspace.gridY / 2
+                                                          + self.workspace.offsetY,
+
+                                                          self.posGridX
+                                                          * self.workspace.gridX
+                                                          + self.workspace.gridX / 2
+                                                          + self.workspace.offsetX,
+
+                                                          self.posGridY
+                                                          * self.workspace.gridY
+                                                          + self.workspace.gridY / 2
+                                                          + self.workspace.offsetY,
+
                                                           fill='yellow')
 
-    def removeObj(self):
-        super(PathPoint, self).removeObj()
-        self.workspace.canvas.delete(self.line)
+
+def removeObj(self):
+    super(PathPoint, self).removeObj()
+    self.workspace.canvas.delete(self.line)
 
 
 class SelectFrame(object):

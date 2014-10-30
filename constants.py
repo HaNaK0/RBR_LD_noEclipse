@@ -19,4 +19,4 @@ TOOL = {"MOVE": 'Move', "SELECT": 'Select', "ERASE": 'Erase', "PLACE": 'Place'}
 WCC = {"NEW": 'New', "LOAD": 'Load'}
 
 #Pathing Mode constants
-PMC = {"OFF": 0, "FLYING": 1, "WALKING": 2}
+PMC = {"OFF": 0, "FLYING": 3, "WALKING": 4}

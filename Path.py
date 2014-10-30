@@ -48,7 +48,7 @@ class Path(object):
         if self.pType == con.PMC["FLYING"]:
             self.nodes.append(node)
             nodeIndex = len(self.nodes) - 1
-            return nodeIndex,
+            return nodeIndex
 
         return None  # if no node was added
 
