@@ -167,16 +167,18 @@ class Workspace(object):
 
         # loading paths
         path_element = root.find("paths")
-        paths = path_element.findall("path")
 
-        for path in paths:
-            owner = self.itemGrid.get(int(path.get("owner x"), int(path.get("owner y"))))
-            temp_path = self.itemGrid.addPath(owner)
+        if path_element is not None:
+            paths = path_element.findall("path")
 
-            nodes = path.findall("node")
+            for path in paths:
+                owner = self.itemGrid.get(int(path.get("owner_x")), int(path.get("owner_y")))
+                temp_path = self.itemGrid.addPath(owner)
 
-            for node in nodes:
-                self.itemGrid.add(node.get("x"), node.get("y"), objType=con.OTYPE["PATH_POINT"], path=temp_path)
+                nodes = path.findall("node")
+
+                for node in nodes:
+                    self.itemGrid.add(int(node.get("x")), int(node.get("y")), objType=con.OTYPE["PATH_POINT"], path=temp_path)
 
     # destroys the workspace correctly
     def destroy(self):
@@ -384,11 +386,18 @@ class Workspace(object):
                     continue
                 elif self.itemGrid.get(i, j).OTYPE == con.OTYPE["BLOB_FLY"] or self.itemGrid.get(i, j).OTYPE == \
                         con.OTYPE["BLOB_WALK"]:
-                    et.SubElement(grid, "item",
-                                  {"iType": con.ROTYPE[self.itemGrid.get(i, j).OTYPE]
-                                      , "x": str(i)
-                                      , "y": str(j)
-                                      , "path": str(self.itemGrid.get(i, j).path.index)})
+                    if self.itemGrid.get(i, j).path is not None:
+                        et.SubElement(grid, "item",
+                                    {"iType": con.ROTYPE[self.itemGrid.get(i, j).OTYPE]
+                                        , "x": str(i)
+                                        , "y": str(j)
+                                        , "path": str(self.itemGrid.get(i, j).path.index)})
+                    else:
+                        et.SubElement(grid, "item",
+                                    {"iType": con.ROTYPE[self.itemGrid.get(i, j).OTYPE]
+                                        , "x": str(i)
+                                        , "y": str(j)
+                                        , "path": str(None)})
                 else:
                     et.SubElement(grid, "item",
                                   {"iType": con.ROTYPE[self.itemGrid.get(i, j).OTYPE]
@@ -401,8 +410,8 @@ class Workspace(object):
                 path_element = et.SubElement(paths
                                              , "path"
                                              , {"index": str(path.index),
-                                                "owner x": str(path.getOwner().posGridX),
-                                                "owner y": str(path.getOwner().posGridY)})
+                                                "owner_x": str(path.getOwner().posGridX),
+                                                "owner_y": str(path.getOwner().posGridY)})
 
                 for node in path.nodes:
                     et.SubElement(path_element, "node", {"x": str(node.posGridX), "y": str(node.posGridY)})

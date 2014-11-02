@@ -249,7 +249,7 @@ class PathPoint(WorkspaceItem):
     def __init__(self, workspace, sprites, posGridX, posGridY, itemGrid, path=None):
         super(PathPoint, self).__init__(workspace, sprites, posGridX, posGridY)
 
-        if itemGrid.currentSelected.path is None:
+        if path is None:
             itemGrid.currentSelected.setPath(itemGrid.addPath(itemGrid.currentSelected))
 
         if path is None:
