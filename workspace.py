@@ -42,20 +42,20 @@ class Workspace(object):
         # loading images
         self.sprites = images
 
-        #setting status bar
+        # setting status bar
         self.statusBar = statuslBar
 
-        #creating actionStack 
+        # creating actionStack
         self.actionStack = As.ActionStack(self)
 
-        #setting values
+        # setting values
         self.currentTool = con.TOOL["MOVE"]
         self.statusBar.setToolModeLbl(self.currentTool)
         self.currentItemType = 0
         self.pathingMode = None
         self.file = file
 
-        #self.currentSelected = None
+        # self.currentSelected = None
 
         self.width = 0
         self.height = 0
@@ -68,22 +68,22 @@ class Workspace(object):
         self.moveStartX = 0
         self.moveStartY = 0
 
-        #setting up the canvas
+        # setting up the canvas
         self.root = canvasMaster
         self.canvas = tk.Canvas(canvasMaster)
         self.canvas.pack(fill=tk.BOTH, expand=True)
 
         self.canvas.focus_set()
-        #binding events 
-        #Mouse event handlers
+        # binding events
+        # Mouse event handlers
         self.canvas.bind("<Button-1>", self.click)
         self.canvas.bind("<B1-Motion>", self.move)
         self.canvas.bind("<ButtonRelease-1>", self.release)
 
-        #Mouse position event handler
+        # Mouse position event handler
         self.canvas.bind("<Motion>", self.statusBar.setMouseLbl)
 
-        #Mouse wheel event
+        # Mouse wheel event
         self.canvas.bind("<MouseWheel>", self.scroll)
 
         #Button events handler
@@ -124,14 +124,14 @@ class Workspace(object):
         self.gridX = gridX
         self.gridY = gridY
 
-        #creating grid
+        # creating grid
         for i in range(int(self.width / self.gridX)):
             self.canvas.create_line(i * self.gridX, 0, i * self.gridX, self.height, tags="Grid")
 
         for i in range(int(self.height / self.gridY)):
             self.canvas.create_line(0, i * self.gridY, self.width, i * self.gridY, tags="Grid")
 
-        #creating ItemGrid
+        # creating ItemGrid
         self.itemGrid = ig.ItemGrid(self, self.sprites)
 
     # loads a workspace
@@ -145,55 +145,68 @@ class Workspace(object):
         gridEl = root.find("grid")
         items = gridEl.findall("item")
 
-        #setting up correct values
+        # setting up correct values
         self.width = int(gridEl.get("width"))
         self.height = int(gridEl.get("height"))
 
         self.gridX = int(gridEl.get("gridX"))
         self.gridY = int(gridEl.get("gridY"))
 
-        #creating grid
+        # creating grid
         for i in range(int(self.width / self.gridX)):
             self.canvas.create_line(i * self.gridX, 0, i * self.gridX, self.height, tags="Grid")
 
         for i in range(int(self.height / self.gridY)):
             self.canvas.create_line(0, i * self.gridY, self.width, i * self.gridY, tags="Grid")
 
-        #creating ItemGrid
+        # creating ItemGrid
         self.itemGrid = ig.ItemGrid(self, self.sprites)
 
         for i in items:
             self.itemGrid.add(int(i.get("x")), int(i.get("y")), con.OTYPE[i.get("iType")])
 
-    #destroys the workspace correctly    
+        # loading paths
+        path_element = root.find("paths")
+        paths = path_element.findall("path")
+
+        for path in paths:
+            owner = self.itemGrid.get(int(path.get("owner x"), int(path.get("owner y"))))
+            temp_path = self.itemGrid.addPath(owner)
+
+            nodes = path.findall("node")
+
+            for node in nodes:
+                self.itemGrid.add(node.get("x"), node.get("y"), objType=con.OTYPE["PATH_POINT"], path=temp_path)
+
+    # destroys the workspace correctly
     def destroy(self):
         self.canvas.destroy()
         self.statusBar.destroy()
 
-        #event callback
+        # event callback
 
-    #canvas event <Button-1>
+    # canvas event <Button-1>
     def click(self, event):
         """
         takes care of what happens when mouse button 1 is clicked
         """
         if self.currentTool == con.TOOL["MOVE"]:
-            #sets the origin value to begin movement 
-            #and the start value to keep track of offset
+            # sets the origin value to begin movement
+            # and the start value to keep track of offset
             self.moveOriginX = event.x
             self.moveOriginY = event.y
             self.moveStartX = event.x
             self.moveStartY = event.y
         elif self.currentTool == con.TOOL["PLACE"]:
-            #creates a level object at event.x, event.y
+            # creates a level object at event.x, event.y
             self.createWorkSpItem(event.x, event.y)
         elif self.currentTool == con.TOOL["ERASE"]:
-            #destroys the object at event.x, event.y
+            # destroys the object at event.x, event.y
             self.removeWorkSpItem(event.x, event.y)
         elif self.currentTool == con.TOOL["SELECT"]:
             self.selectItem(event.x, event.y)
 
-    #canvas event <B1-Motion>    
+    # canvas event <B1-Motion>
     def move(self, event):
         """
         takes care of what happens if mouse button 1 held down and moved
@@ -201,13 +214,13 @@ class Workspace(object):
         self.statusBar.setMouseLbl(event)
 
         if self.currentTool == con.TOOL["MOVE"]:
-            #moves the distance the mouse moved since last update 
+            # moves the distance the mouse moved since last update
             self.canvas.move(tk.ALL, event.x - self.moveOriginX, event.y - self.moveOriginY)
-            #sets origin so movement becomes same as mouse
+            # sets origin so movement becomes same as mouse
             self.moveOriginX = event.x
             self.moveOriginY = event.y
 
-    #canvas event <ButtonRelease-1>        
+    # canvas event <ButtonRelease-1>
     def release(self, event):
         """
         take cares of what happens when the mouse button 1 is released
@@ -216,7 +229,7 @@ class Workspace(object):
             self.offsetX += event.x - self.moveStartX
             self.offsetY += event.y - self.moveStartY
 
-    #canvas event <MouseWheel>
+    # canvas event <MouseWheel>
     def scroll(self, event):
         """
         takes care of scrolling with the mouse wheel
@@ -233,7 +246,7 @@ class Workspace(object):
 
         self.statusBar.setScrollLbl(self.currentItemType)
 
-    #canvas event 'q'        
+    # canvas event 'q'
     def setToMove(self, event):
         """
         Set tool to Move
@@ -241,7 +254,7 @@ class Workspace(object):
         self.currentTool = con.TOOL["MOVE"]
         self.statusBar.setToolModeLbl(self.currentTool)
 
-    #canvas event 'w'
+    # canvas event 'w'
     def setToSelect(self, event):
         """
         set tool to Select
@@ -249,7 +262,7 @@ class Workspace(object):
         self.currentTool = con.TOOL["SELECT"]
         self.statusBar.setToolModeLbl(self.currentTool)
 
-    #canvas event 'e'
+    # canvas event 'e'
     def setToPlace(self, event):
         """
         set tool to place
@@ -257,7 +270,7 @@ class Workspace(object):
         self.currentTool = con.TOOL["PLACE"]
         self.statusBar.setToolModeLbl(self.currentTool)
 
-    #canvas event 'r'
+    # canvas event 'r'
     def setToErase(self, event):
         """
         set tool to erase
@@ -354,7 +367,7 @@ class Workspace(object):
         if self.file is None:
             self.saveAs()
 
-        root = et.Element("blml", {"version": str(0.1)})
+        root = et.Element("blml", {"version": str(0.2)})
 
         grid = et.SubElement(root, "grid",
                              {"height": str(self.height), "width": str(self.width), "gridX": str(self.gridX),
@@ -367,9 +380,32 @@ class Workspace(object):
             for j in range(int(gridHeight)):
                 if self.itemGrid.get(i, j) is None:
                     continue
+                elif self.itemGrid.get(i, j).OTYPE == con.OTYPE["PATH_POINT"]:
+                    continue
+                elif self.itemGrid.get(i, j).OTYPE == con.OTYPE["BLOB_FLY"] or self.itemGrid.get(i, j).OTYPE == \
+                        con.OTYPE["BLOB_WALK"]:
+                    et.SubElement(grid, "item",
+                                  {"iType": con.ROTYPE[self.itemGrid.get(i, j).OTYPE]
+                                      , "x": str(i)
+                                      , "y": str(j)
+                                      , "path": str(self.itemGrid.get(i, j).path.index)})
                 else:
                     et.SubElement(grid, "item",
-                                  {"iType": con.ROTYPE[self.itemGrid.get(i, j).OTYPE], "x": str(i), "y": str(j)})
+                                  {"iType": con.ROTYPE[self.itemGrid.get(i, j).OTYPE]
+                                      , "x": str(i)
+                                      , "y": str(j)})
+
+        paths = et.SubElement(root, "paths", {"amount": str(len(self.itemGrid.paths))})
+        if len(self.itemGrid.paths) > 0:
+            for path in self.itemGrid.paths:
+                path_element = et.SubElement(paths
+                                             , "path"
+                                             , {"index": str(path.index),
+                                                "owner x": str(path.getOwner().posGridX),
+                                                "owner y": str(path.getOwner().posGridY)})
+
+                for node in path.nodes:
+                    et.SubElement(path_element, "node", {"x": str(node.posGridX), "y": str(node.posGridY)})
 
         tree = et.ElementTree(root)
 
@@ -412,63 +448,63 @@ def loadImages():
         print(e)
         simpleTile = None
 
-    #Bob sprite
+    # Bob sprite
     try:
         player = tk.PhotoImage(file=".\Sprites\Bob_animation_ball_1.gif")
     except tk.TclError as e:
         print(e)
         player = None
 
-    #Spike enemy sprite    
+    # Spike enemy sprite
     try:
         spike = tk.PhotoImage(file=".\Sprites\\temp_spike.ppm")
     except tk.TclError as e:
         print(e)
         spike = None
 
-    #enemy Blob flying    
+    # enemy Blob flying
     try:
         blob_fly = tk.PhotoImage(file=".\Sprites\enemy_blob_flying.ppm")
     except tk.TclError as e:
         print(e)
         blob_fly = None
 
-    #enemy blob walking
+    # enemy blob walking
     try:
         blob_walk = tk.PhotoImage(file=".\Sprites\enemy_blob_walking.ppm")
     except tk.TclError as e:
         print(e)
         blob_walk = None
 
-    #half block NE    
+    # half block NE
     try:
         block_half_NE = tk.PhotoImage(file=".\Sprites\\temp_block_half_NE.ppm")
     except tk.TclError as e:
         print(e)
         block_half_NE = None
 
-    #half block NW    
+    # half block NW
     try:
         block_half_NW = tk.PhotoImage(file=".\Sprites\\temp_block_half_NW.ppm")
     except tk.TclError as e:
         print(e)
         block_half_NW = None
 
-    #half block SE    
+    # half block SE
     try:
         block_half_SE = tk.PhotoImage(file=".\Sprites\\temp_block_half_SE.ppm")
     except tk.TclError as e:
         print(e)
         block_half_SE = None
 
-    #half block SW    
+    # half block SW
     try:
         block_half_SW = tk.PhotoImage(file=".\Sprites\\temp_block_half_SW.ppm")
     except tk.TclError as e:
         print(e)
         block_half_SW = None
 
-    #path point    
+    # path point
     try:
         path_point = tk.PhotoImage(file=".\Sprites\\path_point.ppm")
     except tk.TclError as e:

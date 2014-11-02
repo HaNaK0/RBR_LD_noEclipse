@@ -29,11 +29,10 @@ class ItemGrid(object):
         self.paths = []
         self.currentPath = None
 
-    def add(self, posGridX, posGridY, objType=con.OTYPE["BASIC"]):
+    def add(self, posGridX, posGridY, objType=con.OTYPE["BASIC"], path=None):
 
         # if empty
         if self.grid[posGridX][posGridY] is None:
-            # self.grid[posGridX][posGridY] = WorkspaceItem(self.workspace, self.sprites, posGridX, posGridY)
             # adds a basic block
             if objType == con.OTYPE["BASIC"]:
                 self.grid[posGridX][posGridY] = WorkspaceItem(self.workspace, self.sprites, posGridX, posGridY)
@@ -72,7 +71,8 @@ class ItemGrid(object):
 
             #adds a pathing Node
             elif objType == con.OTYPE["PATH_POINT"]:
-                self.grid[posGridX][posGridY] = PathPoint(self.workspace, self.sprites, posGridX, posGridY, self)
+                self.grid[posGridX][posGridY] = PathPoint(self.workspace, self.sprites, posGridX, posGridY, self,
+                                                          path=path)
 
     def remove(self, posGridX, posGridY):
         """
@@ -246,13 +246,17 @@ class PathPoint(WorkspaceItem):
     """
     OTYPE = con.OTYPE["PATH_POINT"]
 
-    def __init__(self, workspace, sprites, posGridX, posGridY, itemGrid):
+    def __init__(self, workspace, sprites, posGridX, posGridY, itemGrid, path=None):
         super(PathPoint, self).__init__(workspace, sprites, posGridX, posGridY)
 
         if itemGrid.currentSelected.path is None:
             itemGrid.currentSelected.setPath(itemGrid.addPath(itemGrid.currentSelected))
 
-        self.path = itemGrid.currentSelected.path
+        if path is None:
+            self.path = itemGrid.currentSelected.path
+        else:
+            self.path = path
+
         self.index = self.path.add(self)
         self.line = None
 
