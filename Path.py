@@ -60,3 +60,18 @@ class Path(object):
 
     def size(self):
         return len(self.nodes)
+
+    def removeNode(self, nodeIndex):
+        """
+        removes a node and all nodes after it
+        :param nodeIndex:
+        :return: array of nodes
+        """
+
+        returnNodes = []
+        for i in range(nodeIndex, len(self.nodes)):
+            returnNodes.append({"x": self.nodes[i].posGridX, "y": self.nodes[i]})
+            self.owner.workspace.itemGrid.remove(self.nodes[i].posGridX, self.nodes[i].posGridY)
+
+        self.nodes = self.nodes[0:nodeIndex]
+        return returnNodes

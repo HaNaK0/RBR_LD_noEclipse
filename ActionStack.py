@@ -4,6 +4,8 @@ Created on 19 aug 2014
 @author: HaNaK0
 """
 
+import constants as con
+
 #constants
 BASIC = 0
 
@@ -88,13 +90,21 @@ class ActionDestroy(Action):
     def __init__(self, workspace, posGridX, posGridY):
         super(ActionDestroy, self).__init__(workspace, posGridX, posGridY)
         self.oType = self.workspace.itemGrid.get(posGridX, posGridY).OTYPE
-        
-        self.workspace.itemGrid.remove(self.posGridX, self.posGridY)
+
+        if self.oType == con.OTYPE["PATH_POINT"]:
+            self.path = self.workspace.itemGrid.get(self.posGridX, self.posGridY).owner.path
+            self.nodes = self.workspace.itemGrid.removePathPoint(self.posGridX, self.posGridY)
+        else:
+            self.workspace.itemGrid.remove(self.posGridX, self.posGridY)
     
     #undo
     def undo(self):
         if self.active:
-            self.workspace.itemGrid.add(self.posGridX, self.posGridY, objType=self.oType)
+            if self.oType == con.OTYPE["PATH_POINT"]:
+                for item in self.nodes:
+                    self.workspace.itemGrid.add()
+            else:
+                self.workspace.itemGrid.add(self.posGridX, self.posGridY, objType=self.oType)
             self.active = False
         else:
             print("Error: Sollux")

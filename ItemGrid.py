@@ -84,6 +84,17 @@ class ItemGrid(object):
         else:
             print("empty")
 
+    def removePathPoint(self, posGridX, posGridY):
+        """
+        removes a pathPoint and all nodes after it in its path
+        """
+        if self.grid[posGridX][posGridY] is not None:
+            index = self.grid[posGridX][posGridY].getIndex()
+            return self.grid[posGridX][posGridY].path.removeNode(index)
+        else:
+            print("empty")
+            return []
+
     def get(self, posGridX, posGridY):
         """
         gets a workspace item based on position in grid
