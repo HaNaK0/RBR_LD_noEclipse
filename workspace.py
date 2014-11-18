@@ -49,7 +49,8 @@ class Workspace(object):
         self.actionStack = As.ActionStack(self)
 
         # setting values
-        self.currentTool = con.TOOL["MOVE"]
+        self.currentTool = con.TOOL["PLACE"]
+        self.modeKeeper = self.currentTool
         self.statusBar.setToolModeLbl(self.currentTool)
         self.currentItemType = 0
         self.pathingMode = None
@@ -74,11 +75,19 @@ class Workspace(object):
         self.canvas.pack(fill=tk.BOTH, expand=True)
 
         self.canvas.focus_set()
+
         # binding events
         # Mouse event handlers
+        #left button
         self.canvas.bind("<Button-1>", self.click)
         self.canvas.bind("<B1-Motion>", self.move)
         self.canvas.bind("<ButtonRelease-1>", self.release)
+        #middle button
+        self.canvas.bind("<Button-2>", self.m2Click)
+        self.canvas.bind("<B2-Motion>", self.move)
+        self.canvas.bind("<ButtonRelease-2>", self.m2Release)
+        #right button
+        self.canvas.bind("<Button-3>", self.m3Click)
 
         # Mouse position event handler
         self.canvas.bind("<Motion>", self.statusBar.setMouseLbl)
@@ -231,12 +240,32 @@ class Workspace(object):
             self.offsetX += event.x - self.moveStartX
             self.offsetY += event.y - self.moveStartY
 
+    #canvas event <Button-2>
+    def m2Click(self, event):
+        self.modeKeeper = self.currentTool
+        self.currentTool = con.TOOL["MOVE"]
+        self.statusBar.setToolModeLbl(self.currentTool)
+        self.click(event)
+
+    # canvas event <ButtonRelease-2>
+    def m2Release(self, event):
+        self.release(event)
+        self.currentTool = self.modeKeeper
+        self.statusBar.setToolModeLbl(self.currentTool)
+
+    #canvas event <Button-3>
+    def m3Click(self, event):
+        self.modeKeeper = self.currentTool
+        self.currentTool = con.TOOL["ERASE"]
+        self.click(event)
+        self.currentTool = self.modeKeeper
+
     # canvas event <MouseWheel>
     def scroll(self, event):
         """
         takes care of scrolling with the mouse wheel
         """
-        if not self.pathingMode:
+        if self.pathingMode is None:
             if event.delta > 0:
                 self.currentItemType += 1
                 if self.currentItemType >= 9:
@@ -326,11 +355,14 @@ class Workspace(object):
                 self.pathModeActivate(con.PMC["WALKING"])
             else:
                 self.pathModeDeActivate()
+        else:
+            self.pathModeDeActivate()
 
     #activate path mode
     def pathModeActivate(self, mode):
         self.pathingMode = mode
         self.currentItemType = con.OTYPE["PATH_POINT"]
+        self.statusBar.setScrollLbl(self.currentItemType)
 
     #deactivate path mode
     def pathModeDeActivate(self):
@@ -340,6 +372,7 @@ class Workspace(object):
         """
         self.pathingMode = None
         self.currentItemType = con.OTYPE["BLOB_WALK"]
+        self.statusBar.setScrollLbl(self.currentItemType)
 
     #save as      
     def saveAs(self, event=None):

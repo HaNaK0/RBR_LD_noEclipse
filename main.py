@@ -14,7 +14,7 @@ import dialogs as dl
 
 
 class Main (object):
-    
+
     def __init__(self):
         self.workspace = None
         self.root = tk.Tk()
@@ -24,48 +24,44 @@ class Main (object):
         self.root.geometry("600x600")
         self.root.title("RBR_LD")
         self.root.mainloop()
-    
+
     def newDialog(self):
         """
         Opens up the New Project Dialog window
         """
         dl.NewProject(self.root, self)
         print(self.inDict)
-    
+
     def newWorkSpace(self):
-        
+
         if self.workspace is None:
             self.workspace = ws.Workspace(self.root, widgets.StatusBar(self.root, self.images), self.images,
                                           gridX=self.inDict["gridX"], gridY=self.inDict["gridY"],
                                           width=self.inDict["width"], height=self.inDict["height"])
-            self.root.config(menu=widgets.MenuBar(self.root, self.workspace, self.images, self.newWorkSpace,
+            self.root.config(menu=widgets.MenuBar(self.root, self.workspace, self.images, self.newDialog,
                                                   self.loadWorkSpace))
         else:
             self.workspace.destroy()
             self.workspace = ws.Workspace(self.root, widgets.StatusBar(self.root, self.images), self.images,
                                           gridX=self.inDict["gridX"], gridY=self.inDict["gridY"],
                                           width=self.inDict["width"], height=self.inDict["height"])
-            self.root.config(menu=widgets.MenuBar(self.root, self.workspace, self.images, self.newWorkSpace,
+            self.root.config(menu=widgets.MenuBar(self.root, self.workspace, self.images, self.newDialog,
                                                   self.loadWorkSpace))
-            
+
     def loadWorkSpace(self):
-        
-        if self.workspace is None:
-            self.workspace = ws.Workspace(self.root, widgets.StatusBar(self.root, self.images), self.images,
-                                          gridX=32, gridY=32, width=1920 * 3, height=1080, option=con.WCC["LOAD"],
-                                          file=fd.askopenfilename(parent=self.root, defaultextension=".blml",
-                                                                  title="Open",
-                                                                  filetypes=[("rbr level file", ".blml"),
-                                                                             ("All files", ".*")]))
-            self.root.config(menu=widgets.MenuBar(self.root, self.workspace, self.images, self.newWorkSpace,
-                                                  self.loadWorkSpace))
-        else:
-            self.workspace.destroy()
-            self.workspace = ws.Workspace(self.root, widgets.StatusBar(self.root, self.images), self.images,
-                                          gridX=32, gridY=32, width=1920 * 3, height=1080, option=con.WCC["LOAD"],
-                                          file=fd.askopenfilename(parent=self.root, defaultextension=".blml",
-                                                                  title="Open",
-                                                                  filetypes=[("rbr level file", ".blml"),
-                                                                             ("All files", ".*")]))
-            self.root.config(menu = widgets.MenuBar(self.root, self.workspace, self.images, self.newWorkSpace,
-                                                    self.loadWorkSpace))
+        file = fd.askopenfilename(parent=self.root, defaultextension=".blml", title="Open",
+                                  filetypes=[("rbr level file", ".blml"), ("All files", ".*")])
+        if file != "":
+            if self.workspace is None:
+                self.workspace = ws.Workspace(self.root, widgets.StatusBar(self.root, self.images), self.images,
+                                              gridX=32, gridY=32, width=1920 * 3, height=1080, option=con.WCC["LOAD"],
+                                              file=file)
+                self.root.config(menu=widgets.MenuBar(self.root, self.workspace, self.images, self.newWorkSpace,
+                                                      self.loadWorkSpace))
+            else:
+                self.workspace.destroy()
+                self.workspace = ws.Workspace(self.root, widgets.StatusBar(self.root, self.images), self.images,
+                                              gridX=32, gridY=32, width=1920 * 3, height=1080, option=con.WCC["LOAD"],
+                                              file=file)
+                self.root.config(menu = widgets.MenuBar(self.root, self.workspace, self.images, self.newWorkSpace,
+                                                        self.loadWorkSpace))
