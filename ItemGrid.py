@@ -207,6 +207,10 @@ class EnemyBlobFlying(WorkspaceItem):
 
     def setPath(self, path):
         self.path = path
+        return path
+
+    def getPath(self):
+        return self.path
 
     def removeObj(self):
         super(EnemyBlobFlying, self).removeObj()
@@ -261,10 +265,11 @@ class PathPoint(WorkspaceItem):
         super(PathPoint, self).__init__(workspace, sprites, posGridX, posGridY)
 
         if path is None:
-            itemGrid.currentSelected.setPath(itemGrid.addPath(itemGrid.currentSelected))
-
-        if path is None:
-            self.path = itemGrid.currentSelected.path
+            path = itemGrid.currentSelected.getPath()
+            if path is None:
+                self.path = itemGrid.currentSelected.setPath(itemGrid.addPath(itemGrid.currentSelected))
+            else:
+                self.path = path
         else:
             self.path = path
 
